@@ -1,16 +1,16 @@
-# Actual Assistant Engineer
+# Assistant Engineer
 
 A Hermes plugin that operates Ableton Live as an assistant engineer. It creates and saves Sets, builds any instrument or effect structure, writes and arranges MIDI, automates clips and arrangement lanes, sidechains and mixes, works inside VST3 plug-ins, lays songs out in the Arrangement with named sections, and checks its own work until the track is complete. Every musical decision comes from the model Hermes is running; the plugin supplies the hands and the checks.
 
-macOS and Windows (including ARM64 Hermes with x64 Live under Prism), Ableton Live 12.4+ (any edition). Windows qualification status and prerequisites: [Windows setup](docs/windows.md). New here? Start with **[Getting started](docs/getting-started.md)**. Plan and status: [#1](https://github.com/somewheresy/actual-assistant-engineer/issues/1). Measurements: [docs/spike-results.md](docs/spike-results.md).
+macOS and Windows (including ARM64 Hermes with x64 Live under Prism), Ableton Live 12.4+ (any edition). Windows qualification status and prerequisites: [Windows setup](docs/windows.md). New here? Start with **[Getting started](docs/getting-started.md)**. Plan and status: [#1](https://github.com/somewheresy/assistant-engineer/issues/1). Measurements: [docs/spike-results.md](docs/spike-results.md).
 
 ## Install
 
-Everything ships in one plugin folder, [`plugin/actual-assistant-engineer`](plugin/actual-assistant-engineer): the Hermes plugin, the Live control surface, native helper sources, and the `hermes assistant-engineer` CLI.
+Everything ships in the [`plugin/`](plugin/) folder: the Hermes plugin, the Live control surface, native helper sources, and the `hermes assistant-engineer` CLI.
 
 ```bash
-hermes plugins install actual-assistant-engineer     # from the catalog; accept the pedalboard dependency
-# or: hermes plugins install https://github.com/somewheresy/actual-assistant-engineer#plugin/actual-assistant-engineer
+hermes plugins install assistant-engineer     # from the catalog; accept the pedalboard dependency
+# or: hermes plugins install https://github.com/somewheresy/assistant-engineer#plugin/assistant-engineer
 hermes assistant-engineer setup                                    # installs the Live control surface; builds helpers if swiftc exists
                                                     # add --index-plugins to cache every VST3's parameters up front
 ```
@@ -33,7 +33,7 @@ Requirements: macOS or Windows; Ableton Live 12.4+; Hermes Agent 0.21+ with a to
 ## Use
 
 ```bash
-hermes chat -s actual-assistant-engineer:assistant-engineer -t actual_assistant_engineer,delegation
+hermes chat -s assistant-engineer:assistant-engineer -t assistant_engineer,delegation
 ```
 
 Ask in plain language: *"make a future beat"*, *"split the kick onto its own track and sidechain everything from it"*, *"expose the synth's filter cutoff and automate it into the drop"*, *"run a QA pass and fix the three biggest issues"*. Hermes uses whatever model its config selects.
@@ -45,7 +45,7 @@ To keep it working until the track is finished, use a Hermes goal with the compl
 /goal gate add hermes assistant-engineer review --require arrangement,locators,automation,sidechain,mix
 ```
 
-`hermes assistant-engineer review` exits non-zero until the Set has no gaps (silent tracks, empty clips, parts missing from the arrangement, unnamed sections, missing automation/sidechain/mix), so the goal can't complete early. To continue an earlier session: `hermes chat --resume <session id> -s actual-assistant-engineer:assistant-engineer -t actual_assistant_engineer,delegation`.
+`hermes assistant-engineer review` exits non-zero until the Set has no gaps (silent tracks, empty clips, parts missing from the arrangement, unnamed sections, missing automation/sidechain/mix), so the goal can't complete early. To continue an earlier session: `hermes chat --resume <session id> -s assistant-engineer:assistant-engineer -t assistant_engineer,delegation`.
 
 ## Models
 
@@ -70,7 +70,7 @@ Locally hosted models are for iterative requests, not whole-song building. When 
 
 ```
 Hermes (any tool-calling model)
-  └─ plugin/actual-assistant-engineer            8 tools, assistant-engineer skill, `hermes assistant-engineer` CLI
+  └─ plugin/                              8 tools, assistant-engineer skill, `hermes assistant-engineer` CLI
         │  macOS: owner-only Unix socket; Windows: authenticated IPv4 loopback
         │  JSON batches; Windows endpoint/key file restricted to the current user
         ▼
@@ -83,7 +83,7 @@ What Live's scripting API can't reach goes through a translation layer between t
 
 ## Repository
 
-- `plugin/actual-assistant-engineer/` — the product (what the catalog installs). `live/Hermes/` is the control surface: `ops.py` (core: tracks, scenes, clips, notes, devices, browser, transport, arrangement, locators), `ops_mix.py`, `ops_devices.py`, `ops_automation.py`, `ops_review.py`, `ops_lom.py`. `native/` holds the Swift helper sources.
+- `plugin/` — the product (what the catalog installs). `live/Hermes/` is the control surface: `ops.py` (core: tracks, scenes, clips, notes, devices, browser, transport, arrangement, locators), `ops_mix.py`, `ops_devices.py`, `ops_automation.py`, `ops_review.py`, `ops_lom.py`. `native/` holds the Swift helper sources.
 - `src/` — Bun client, the `assistant-engineer` dev CLI, track measurement. `engine/als.py` — whole-Set generation from a song spec.
 - `spike/` — probes and `run-song.ts`, the measured end-to-end harness.
 - `test/` — bridge tests (fake Live), engine tests (Live-saved `.als`), integration suite (real Live).
