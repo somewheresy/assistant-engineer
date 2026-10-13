@@ -118,4 +118,4 @@ See [AGENTS.md](AGENTS.md) for conventions and safety rules.
 
 ## License
 
-[Apache License 2.0](LICENSE). Copyright 2026 Actual Computer.
+[Apache License 2.0](LICENSE). 
